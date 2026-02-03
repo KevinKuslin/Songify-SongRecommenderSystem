@@ -1,0 +1,312 @@
+@import "tailwindcss"; 
+
+@font-face {
+    font-family: 'Gotham';
+    src: url("/static/fonts/Gotham-Medium.otf") format('truetype');
+}
+
+body{
+    margin: 0; 
+    padding: 0;
+    overflow-x: hidden;
+}
+
+.body-main{
+    width: 100vw; 
+    height: 100vh; 
+}
+
+.fullscreen {
+    width: 100%; 
+    height: 100%; 
+    background-size: cover; 
+    background-position: center; 
+    background-repeat: no-repeat; 
+}
+
+.container-logo {
+    gap: 12px; 
+    justify-content: space-between;
+}
+
+.logo{
+    width: 42px; 
+    height: 42px; 
+    background-size: cover; 
+    background-position: center; 
+    background-repeat: no-repeat; 
+    border-radius: 50px; 
+}
+
+.title {
+    font-family: 'Gotham'; 
+}   
+
+.search-bar {
+    width: 55vw; 
+    height: 100%; 
+}
+
+.app-logo {
+    width: 100vw - 44px; 
+    height: auto; 
+    gap: 12px; 
+    justify-content: space-between;
+}
+
+.app-visit {
+    background-color: #00db4d; 
+    padding: 5px 15px 5px 15px; 
+    border-radius: 10px; 
+    font-family: 'Gotham'; 
+    cursor: pointer;
+}
+
+.container-items {
+    margin-top: 2.5%;
+    width: 100vw - 44px; 
+    height: 70vh; 
+    gap: 2vh; 
+}
+
+.search-text-1 {
+    font-family: Verdana, Geneva, Tahoma, sans-serif; 
+    width: 37vw; 
+    text-align: center;
+}
+
+.search-text-subheader {
+    font-family: Verdana, Geneva, Tahoma, sans-serif; 
+    margin-top: 5px;
+}
+
+input {
+    flex: 1; 
+    height: 50px; 
+    border: 0; 
+    outline: 0;
+}
+
+.row-search-bar {
+    background-color: #282828; 
+    border-radius: 30px;
+    justify-content: space-between; 
+    width: 100%; 
+    padding: 0 15px; 
+    align-items: center; 
+    transition: 0.1s ease-in-out;
+}
+
+.row-search-bar:hover {
+    outline-color: white; 
+    outline-width: 2.5px; 
+    outline-style: solid;
+}
+
+.magnifying-glass {
+    font-size: 20px; 
+    filter: brightness(1200%);
+}
+
+.search-button {
+    background-color: #00db4d; 
+    color: black; 
+    padding: 5px 15px; 
+    border-radius: 10px; 
+    cursor: pointer; 
+    transition: 0.2s ease-in-out;
+}
+
+.search-button:hover {
+    transform: scale(1.04); 
+    background-color: #1db954; 
+}
+
+.result-box {
+    width: 60%; 
+    height: 240px; 
+    display: flex; 
+    align-items: center;
+    padding: 10px; 
+    padding-left: 20px;
+    margin-top: 10px; 
+    justify-content: space-between;
+}
+
+.result-items {
+    background-color: #282828; 
+    border-radius: 10px; 
+    width: 47%; 
+    height: 100%; 
+    border-radius: 15px; 
+    gap: 5px;
+}
+
+.song-info {
+    display: flex; 
+    flex-direction: column;
+}
+
+.song-name {
+    font-size: 15px; 
+    font-family: Verdana, Geneva, Tahoma, sans-serif; 
+    color: #F0F0F0; 
+    font-weight: bold;
+}
+
+.song-artist {
+    font-size: 13px; 
+    font-family: Verdana, Geneva, Tahoma, sans-serif; 
+    color: #B3B3B3;
+}
+
+.song-container {
+    /* background-color: red;  */
+    gap: 10px; 
+    padding: 10px; 
+    cursor: pointer; 
+    border-radius: 15px;
+}
+
+.song-container img {
+    height: 50px; 
+    width: 50px; 
+    border-radius: 5px;
+}
+
+.song-container:hover {
+    background-color: #404040;
+}
+
+.footer-class {
+    background-color: black; 
+    width: 100vw; 
+    height: 40vh;
+}
+
+.container-footer{
+    width: (100% - 40px); 
+    height: 275px; 
+    background-color: black; 
+    overflow: hidden; 
+    display: flex;
+    justify-content: center; 
+    align-items: center; 
+    flex-direction: column; 
+    gap: 20px; 
+    padding: 20px; 
+}
+
+.songify-desc {
+    width: 640px; 
+    text-align: center; 
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+.songify-text {
+    color: black; 
+    background-color: #00db4d; 
+    padding: 5px 10px; 
+    border-radius: 10px;
+}
+
+.footer-copyright {
+    width: 640px; 
+    text-align: center;
+}
+
+.selected-song-container {
+    width: 100vw; 
+    height: auto; 
+    background-color: black; 
+    padding: 32px 32px 0 32px;  
+}
+
+.selected-song-name {
+    width: inherit;
+}
+
+.selected-song-inner-container {
+    background-color: #4D3D3D;  
+    width: 100%; 
+    height: 100%; 
+    border-radius: 20px; 
+    border-radius: 18px;
+}
+
+.selected-song-cover {
+    height: 182.8px; 
+    width: 182.8px; 
+    border-radius: 10px; 
+    margin-left: 32px; 
+    border-width: 8px; 
+    border-color: black;
+}
+
+.selected-song-info-container {
+    margin-left: 32px; 
+    padding-right: 10px; 
+}
+
+.song-info-texts {
+    font-family: 'Gotham';
+}
+
+.song-info-artist {
+    font-family: 'Gotham'; 
+    color: #B3B3B3;
+}
+
+.song-made-for-you img {
+    width: 20px; 
+    height: 20px;  
+}
+
+.navigation-button {
+    background-color: #00db4d; 
+    padding: 10px; 
+    border-radius: 10px; 
+    width: 40px; 
+    height: 40px; 
+    margin-left: 92%; 
+    transition: 0.2s ease-in-out; 
+    cursor: pointer;
+}
+
+.navigation-button a {
+    margin-top: -2px; 
+}
+
+.navigation-button:hover{
+    transform: scale(1.05); 
+    background-color: #1db954;
+}
+
+.error-container {
+    background-color: #404040; 
+    width: 40vw; 
+    height: 30vh; 
+    border-radius: 30px;
+}
+
+.play-now-button-container {
+    width: 100vw; 
+    height: 10vh; 
+    background-color: black;
+}
+
+.play-now-button {
+    width: 50px; 
+    height: 50px; 
+    padding: 10px; 
+    border-radius: 30px; 
+    background-color: #00db4d;
+}
+
+.recommended-songs-container {
+    padding: 0 32px;
+}
+
+.recommended-songs-text {
+    font-family: 'Gotham';
+}

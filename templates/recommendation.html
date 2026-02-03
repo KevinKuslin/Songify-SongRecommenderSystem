@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Recommendations</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/output.css') }}">
+    <link rel="icon" href="{{ url_for('static', filename='assets/spotify_logo.png') }}">
+</head>
+<body class="bg-black">
+    <button class="navigation-button mt-12 absolute text-black font-bold items-center justify-center">
+        <a href="/">
+            <img src="{{ url_for('static', filename='assets/back-arrow-icon.webp') }}" alt="">
+        </a>
+    </button> 
+
+    <div class="selected-song-container flex p-5"> 
+        <div class="selected-song-inner-container flex items-center">
+            <img 
+                src="{{ url_for('static', filename=selected_song.cover) }}"
+                alt="Song Cover"
+                class="selected-song-cover">
+
+            <div class="selected-song-info-container">
+                <p class="song-info-texts text-white text-[14px] mt-6">Your Selected Song</p>
+                <p class="text-white text-[86px] font-extrabold -mt-6 selected-song-name">{{ selected_song.track_name }}</p> 
+                <p class="song-info-artist text-white text-[14px] -mt-2">♪ {{ selected_song.artist_name }}</p>
+                <div class="song-made-for-you flex items-center mt-2 mb-6">
+                    <img src="{{ url_for('static', filename='assets/spotify_logo.png') }}" alt="" class=""> 
+                    <p class=" song-info-texts ml-3 text-white">Made Just For You •</p>
+                    <span 
+                        class="song-duration text-white ml-3 font-bold" 
+                        data-duration="{{ selected_song.duration_ms }}">
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="play-now-button-container flex mt-2 gap-2 items-center">
+        <button class="play-now-button ml-10 text-[20px]">▶︎</button>
+    </div>
+    
+    <div class="recommended-songs-container flex flex-col gap-2">
+        <p class="recommeded-songs-text font-bold text-[32px] text-white">Recommended Songs</p>
+        <div class="grid grid-cols-3 gap-5">
+            {% for song in recommendations %} 
+                    <form action="/recommend" method="POST">
+                        <input type="hidden" name="track_name" value="{{ song.track_name }}">
+
+                        <button type="submit"
+                            class="song-container flex items-center p-4 bg-gray-900 rounded-lg w-full text-left
+                                hover:bg-gray-800 hover:scale-[1.02]
+                                active:scale-[0.98]
+                                transition transform duration-150">
+
+                            <img 
+                                src="{{ url_for('static', filename=song.cover) }}"
+                                alt="Song Cover"
+                                class="selected-song-cover">
+
+                            <div class="song-info ml-4">
+                                <div class="song-name font-semibold text-white">
+                                    {{ song.track_name }}
+                                </div>
+                                <div class="song-artist opacity-70 text-white">
+                                    ♪ {{ song.artist_name }}
+                                </div>
+                            </div>
+                        </button>
+                </form>
+
+            {% endfor %}
+        </div>
+    </div>
+
+    <footer class="container-footer flex flex-col items-center">
+        <div class="songify-text text-[20px] font-semibold">WHAT IS SONGIFY?</div>
+        <div class="songify-desc text-white text-[12px] opacity-65">A Recommender System that enhances music searching and 
+            exploration experience. Search up your song and get recommended 12 similar 
+            musics that you may like!
+        </div>
+        <div class="adress text-white text-[12px] opacity-65">Registered Developers: Group 5 Machine Learning PPTI 21, Sentul City, Indonesia</div>
+        <div class="footer-copyright text-white text-[12px] opacity-65">©2025 Songify, Inc. SONGIFY and any associated logos are trademarks, service marks, and/or registered trademarks of SONGIFY, Inc.</div>
+    </footer>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.song-duration').forEach(el => {
+        const durationMs = parseInt(el.dataset.duration);
+
+        if (isNaN(durationMs)) return;
+
+        const minutes = Math.floor(durationMs / 60000);
+        const seconds = Math.floor((durationMs % 60000) / 1000);
+
+        el.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+    });
+});
+</script>
+
+
+
+</body>
+</html>

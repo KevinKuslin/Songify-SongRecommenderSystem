@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Songify</title>
+    <!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/output.css') }}"> -->
+    <link rel="stylesheet" href="../static/css/output.css">
+    <!-- <link rel="icon" href="../assets/spotify_logo.png"> -->
+    <link rel="icon" href="{{ url_for('static', filename='assets/spotify_logo.png')}}">
+</head>
+<body> 
+    <div class="body-main min-h-screen flex flex-col items-center bg-black rounded-se p-8 justify-center">
+        <div class="fullscreen flex flex-col text-white shadow-md" style="background-image: url('{{ url_for('static', filename='assets/background.jpg') }}');">
+            <div class="container-logo flex items-center m-4">
+                <div class="app-logo flex items-center">
+                    <div class="logo" style="background-image: url('{{ url_for('static', filename='assets/spotify_logo.png') }}');"></div>
+                    <div class="title font-medium text-[16px] tracking-[0.04em]">Songify</div>
+                </div>
+                <div class="app-visit text-black" id="scrollToBottomBtn">About Songify</div>
+            </div>
+            <div class="container-items flex flex-col items-center">
+                <div class="search-text-1 font-bold text-[33px] tracking-[0.02em]">
+                    Look Across Thousands of Diversed Songs
+                </div>
+                <div class="search-text-subheader text-[16px]">Only Searching for Songs? Get Recommended of Similar Musics too!</div>
+                
+                <!-- search bar -->
+                
+                <form action="/recommend" method="POST" class="search-bar relative flex flex-col z-50">
+                    <div class="row-search-bar flex items-center">
+                        <div class="magnifying-glass">🔎</div>
+                        <input
+                        id="search"
+                        name="track_name"
+                        type="text"
+                        placeholder="Search song..."
+                        class="w-full p-3 rounded-lg text-white focus:outline-none"
+                        autocomplete="off"
+                        />
+                        <button type="submit" class="search-button">Search</button>
+                    </div>
+                </form>
+                    
+                    
+                    <div class="result-box text-white flex text-[18px]">
+                        <div class="result-items flex flex-col">
+                            {% for song in home_songs_1 %} 
+                                <form action="/recommend" method="POST">
+                                    <input type="hidden" name="track_name" value="{{ song.track_name }}">
+
+                                    <button type="submit"
+                                        class="song-container flex items-center p-4 bg-gray-900 rounded-lg w-full text-left
+                                            hover:bg-gray-800 hover:scale-[1.02]
+                                            active:scale-[0.98]
+                                            transition transform duration-150">
+
+                                        <img 
+                                            src="{{ url_for('static', filename=song.cover) }}"
+                                            alt="Song Cover"
+                                            class="selected-song-cover">
+
+                                        <div class="song-info ml-4">
+                                            <div class="song-name font-semibold text-white">
+                                                {{ song.track_name }}
+                                            </div>
+                                            <div class="song-artist opacity-70 text-white">
+                                                ♪ {{ song.artist_name }}
+                                            </div>
+                                        </div>
+                                    </button>
+                            </form>
+                            {% endfor %}
+                        </div>
+
+                        <div class="result-items flex flex-col">
+                            {% for song in home_songs_2 %} 
+                                <form action="/recommend" method="POST">
+                                    <input type="hidden" name="track_name" value="{{ song.track_name }}">
+
+                                    <button type="submit"
+                                        class="song-container flex items-center p-4 bg-gray-900 rounded-lg w-full text-left
+                                            hover:bg-gray-800 hover:scale-[1.02]
+                                            active:scale-[0.98]
+                                            transition transform duration-150">
+
+                                        <img 
+                                            src="{{ url_for('static', filename=song.cover) }}"
+                                            alt="Song Cover"
+                                            class="selected-song-cover">
+
+                                        <div class="song-info ml-4">
+                                            <div class="song-name font-semibold text-white">
+                                                {{ song.track_name }}
+                                            </div>
+                                            <div class="song-artist opacity-70 text-white">
+                                                ♪ {{ song.artist_name }}
+                                            </div>
+                                        </div>
+                                    </button>
+                            </form>
+
+                            {% endfor %}
+                        </div>
+                    </div>
+            </div>
+        </div> 
+    </div>
+    
+    <footer class="container-footer flex flex-col items-center">
+        <div class="songify-text text-[20px] font-semibold">WHAT IS SONGIFY?</div>
+        <div class="songify-desc text-white text-[12px] opacity-65">A Recommender System that enhances music searching and 
+            exploration experience. Search up your song and get recommended 12 similar 
+            musics that you may like!
+        </div>
+        <div class="adress text-white text-[12px] opacity-65">Registered Developers: Group 5 Machine Learning PPTI 21, Sentul City, Indonesia</div>
+        <div class="footer-copyright text-white text-[12px] opacity-65">©2025 Songify, Inc. SONGIFY and any associated logos are trademarks, service marks, and/or registered trademarks of SONGIFY, Inc.</div>
+    </footer>
+
+<script>
+    const scrollToBottomBtn = document.getElementById('scrollToBottomBtn'); 
+
+    scrollToBottomBtn.addEventListener('click', function() {
+        scrollToBottom(); 
+    })
+
+    function scrollToBottom(){
+        window.scrollTo({
+            top: document.documentElement.scrollHeight, 
+            behavior: 'smooth'
+        })
+    }
+</script>
+
+</body>
+</html>
