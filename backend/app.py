@@ -1,7 +1,7 @@
 from flask import Flask, request, render_template, jsonify
 import joblib 
 
-from model.model import SpotifyRecommender 
+from model.model import SpotifyRecommender
 from backend.util import choose_song_cover 
 
 import os 
@@ -15,11 +15,16 @@ app = Flask(
     static_folder=os.path.join(ROOT_DIR, "static")
     ) 
 
-pipeline = joblib.load("model/pipeline.joblib") 
-df = joblib.load("model/df.joblib")
-df_train = joblib.load("model/df_train.joblib") 
+artifacts = joblib.load("model/spotify_model.pkl")
 
-recommender = SpotifyRecommender(df, pipeline) 
+df = artifacts["df"]
+audio_features = artifacts["audio_features"]
+scaler = artifacts["scaler"]
+artist_matrix = artifacts["artist_matrix"]
+artist_names = artifacts["artist_names"]
+kmeans = artifacts["kmeans"]
+
+recommender = SpotifyRecommender(df, artist_matrix, artist_names, audio_features, scaler) 
 
 HOME_SONGS = [
     {
@@ -82,7 +87,7 @@ def recommend():
     
     try: 
         selected_song, rec_df = recommender.recommend(track_name, top_k=12) 
-        selected_song["cover"] = choose_song_cover(selected_song)
+        selected_song["cover"] = choose_song_cover(selected_song) 
         recommendations = rec_df.to_dict(orient="records") 
 
         for song in recommendations:
@@ -103,4 +108,4 @@ def recommend():
         )
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True, use_reloader=False)

@@ -1,54 +1,97 @@
+from sklearn.metrics.pairwise import euclidean_distances 
+import numpy as np 
+
 class SpotifyRecommender:
-    def __init__(self, df, pipeline):
+    def __init__(self, df, artist_matrix, artist_names, audio_features, scaler):
         self.df = df
-        self.pipeline = pipeline
+        self.artist_matrix = artist_matrix
+        self.artist_names = artist_names
+        self.audio_features = audio_features
+        self.scaler = scaler
+        self.track_id_to_index = dict(zip(df["track_id"], df.index)) 
+
+    def audio_similarity_euclidean(self, song_idx, X_cluster):
+        distances = euclidean_distances(
+            [X_cluster[song_idx]],
+            X_cluster
+        )[0]
+
+        return 1 / (1 + distances)
+
+    def artist_similarity_euclidean(self, artist_name):
+        artist_idx = self.artist_names.index(artist_name)
+        artist_vec = self.artist_matrix[artist_idx]
+
+        distances = euclidean_distances(
+            [artist_vec],
+            self.artist_matrix
+        )[0]
+
+        return 1 / (1 + distances)
 
     def recommend(self, track_name, top_k=12):
-        track_name = track_name.strip().lower()
+        track_name = track_name.lower().strip()
+
+        print("INPUT DARI FORM :", repr(track_name))
+        print("DF TYPE:", type(self.df), flush=True)
 
         df = self.df.copy()
+
+        print("DF COLUMNS:", df.columns.tolist(), flush=True)
+        print("CONTOH TRACK DI DF :", df["track_name"].head(5).tolist())
+        print("CONTOH CLEAN DF :", df["track_name"].str.lower().str.strip().head(5).tolist())
+
         df["track_name_clean"] = df["track_name"].str.lower().str.strip()
 
         matches = df[df["track_name_clean"] == track_name]
         if matches.empty:
             raise ValueError(f"Song '{track_name}' not found")
 
-        query_song = matches.iloc[0]
+        song = matches.iloc[0]
+        global_idx = song.name
 
-        idx = query_song.name
-        query = df.loc[[idx]]
+        cluster = song['cluster'] 
 
-        query_transformed = self.pipeline.named_steps["preprocess"].transform(query)
+        cluster_songs = df[df['cluster'] == cluster].copy()
+        cluster_songs = cluster_songs.reset_index(drop=True)
 
-        deduplicate_consequence = 50
-
-        distances, indices = self.pipeline.named_steps["knn"].kneighbors(
-            query_transformed,
-            n_neighbors=top_k + 1 + deduplicate_consequence
+        cluster_songs['global_idx'] = cluster_songs['track_id'].map(
+            self.track_id_to_index
         )
 
-        recs = df.iloc[indices[0][1:]][[
-            "track_name", "artist_name", "duration_ms",
-            "popularity", "acousticness", "danceability",
-            "instrumentalness", "speechiness"
-        ]].copy()
+        X_cluster = self.scaler.transform(cluster_songs[self.audio_features])
 
-        recs["similarity_score"] = 1 - distances[0][1:] 
+        song_idx = cluster_songs.index[
+            cluster_songs['track_id'] == song['track_id']
+        ][0]
 
-        recs = recs[
-            ~(
-                (recs["track_name"] == query_song["track_name"]) & 
-                (recs["artist_name"] == query_song["artist_name"])
-            )
+        audio_sims = self.audio_similarity_euclidean(song_idx, X_cluster)
+
+        artist_sims = self.artist_similarity_euclidean(song['artist_name'])
+        artist_sims_cluster = np.array([
+            artist_sims[self.artist_names.index(a)]
+            for a in cluster_songs['artist_name']
+        ])
+
+        w_audio = 0.7
+        w_artist = 0.3 
+
+        cluster_songs['score'] = (
+            w_audio * audio_sims +
+            w_artist * artist_sims_cluster
+        )
+
+        cluster_songs = cluster_songs[
+            cluster_songs['track_id'] != song['track_id']
         ]
-        
-        recs = (
-            recs
-            .sort_values("similarity_score", ascending=False)
-            .drop_duplicates(subset=["track_name", "artist_name"])
+
+        max_per_artist = 2 
+        ranked = (
+            cluster_songs
+            .sort_values('score', ascending=False)
+            .groupby('artist_name')
+            .head(max_per_artist)
             .head(top_k)
-            .reset_index(drop=True)
         )
 
-        return query_song.to_dict(), recs
-
+        return song.to_dict(), ranked 
